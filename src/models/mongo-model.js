@@ -1,4 +1,8 @@
 'use strict';
+
+const Q = require('../app.js').Q;
+
+
 /**
  * Mongo Data Model Interface
  * @module src/models/mongo-model
@@ -20,6 +24,7 @@ class Model {
    */
   get(_id) {
     let queryObject = _id ? {_id} : {};
+    Q.publish('database', 'read', {message:'get() was used'});
     return this.schema.find(queryObject);
   }
   
@@ -29,6 +34,7 @@ class Model {
    */
   post(record) {
     let newRecord = new this.schema(record);
+    Q.publish('database', 'create', {message:'post() was used'});
     return newRecord.save();
   }
 
@@ -39,6 +45,7 @@ class Model {
    * @returns {object} Updated record from the database 
    */
   put(_id, record) {
+    Q.publish('database', 'update', {message:'put() was used'});
     return this.schema.findByIdAndUpdate(_id, record, {new:true});
   }
 
@@ -48,6 +55,7 @@ class Model {
    * @returns {object} Empty object to indicate that record was successfully deleted.
    */
   delete(_id) {
+    Q.publish('database', 'delete', {message:'delete() was used'});
     return this.schema.findByIdAndDelete(_id);
   }
 
